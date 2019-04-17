@@ -12,11 +12,6 @@ class LatexEngin(object):
     # todo add möglichkeit für \num
     # todo everthing in english
 
-
-    # def __init__(self, var_object: 'Variable', dict: Dict[str, sympy.Symbol], formel,
-    #             var_list, dict_symbols: Dict[sympy.Symbol, str]):
-    #    self.sys, self.stat, self.overall, self.value = LatexEngin.partial_str(var_object, dict, formel, dict_symbols)
-
     def __init__(self, var_object: 'Variable'):
         self.var_object = var_object
         self.overall = self.get_overall()
@@ -36,8 +31,8 @@ class LatexEngin(object):
                                                                self.var_object.latex, sigma))
 
         self.stat.append("\\Delta {}_{{\\rm stat}} = \\dfrac{{t}}{{\\sqrt{{n}}}}\\sigma_{{ {} }} = {} " \
-                         "\cdot \\sigma_{{ {} }} = {}".format(self.var_object.latex, self.var_object.latex, stud_t,
-                                                              self.var_object.latex, deviation))
+                         "\\cdot \\sigma_{{ {} }} = {}".format(self.var_object.latex, self.var_object.latex, stud_t,
+                                                               self.var_object.latex, deviation))
 
         # update latex code of the var_object and update strings
         self.var_object._latex = "\\overline{{ {} }}".format(self.var_object.latex)
@@ -86,7 +81,7 @@ class LatexEngin(object):
         self.sys = my_str_sys.replace("\\\\", "\\")
         self.stat = my_str_stat.replace("\\\\", "\\")
 
-    def get_overall(self):
+    def get_overall(self) -> str:
         my_str_overall = "\\Delta {} = \\Delta {}_{{\\rm sys}} + " \
                          "\\Delta {}_{{\\rm stat}} = {}".format(self.var_object.latex,
                                                                 self.var_object.latex,
@@ -124,22 +119,18 @@ class Variable(object):
         self.value = value
         self.latex_resp = LatexEngin(self)
 
-    def value_exact(self):
+    def value_exact(self) -> str:
         return "{}={}".format(self.latex, self.value)
 
-    def __str__(self):
+    def __str__(self) -> str:
         err = self.overall_err()
         n = Variable.round_return(err, 1)
         return "({}\\pm {})".format(round(self.value, n), round(err, n))
 
-    @property
-    def latex(self):
-        if not self._latex:
-            return self.varname
-        else:
-            return self._latex
+    def overall_err(self) -> float:
+        return self.sys + self.stat
 
-    def calc_stat(self, stat: List[float], stud_t=None):
+    def calc_stat(self, stat: List[float], stud_t=None) -> LatexEngin:
         stat = np.array(stat)
 
         mean = Variable.mittel_wert(stat)
@@ -150,36 +141,14 @@ class Variable(object):
             stud_t = student_t[len(stat)]
         self.stat = stud_t * var
 
-        # stat_mean = "\\overline{{ {} }} = \\dfrac{{1}}{{n}}\\sum\\limits_{{i=1}}^{{n}}{}_i = {}".format(self.latex,
-        #                                                                                                 self.latex,
-        #                                                                                                 mean)
-        # stat_sigma = "\\sigma_{{ {} }} = \\sqrt{{\\dfrac{{1}}{{n-1}}\\sum\\limits_{{i=1}}^{{n}}({}_i-" \
-        #              "\\overline{{ {} }})^2}} = {}".format(self.latex, self.latex, self.latex, var)
-        #
-        # stat_deviation = "\\Delta {}_{{\\rm stat}} = \\dfrac{{t}}{{\\sqrt{{n}}}}\\sigma_{{ {} }} = {} " \
-        #                  "\cdot \\sigma_{{ {} }} = {}".format(self.latex, self.latex, stud_t, self.latex, self.stat)
-
         # create new object to avoid side effects
         self.latex_resp = LatexEngin(self)
         # call has side effects on self object: will change latex code with an overline on it
         self.latex_resp.set_from_values(mean, var, self.stat, stud_t)
 
-        # self._latex = "\\overline{{ {} }}".format(self.latex)
         return self.latex_resp
 
-    def overall_err(self):
-        return self.sys + self.stat
-
-    @staticmethod
-    def get_symbols_dicts(var_list: List['Variable']):
-        dict = {}
-        dict_symbols = {}
-        for i in var_list:
-            dict[i.varname] = sympy.Symbol(i.varname)
-            dict_symbols[sympy.Symbol(i.varname)] = i.latex
-        return dict, dict_symbols
-
-    def calc_err(self, formular: str, var_list: List['Variable']):
+    def calc(self, formular: str, var_list: List['Variable']) -> LatexEngin:
 
         dict, dict_symbols = Variable.get_symbols_dicts(var_list)
         sym_formular = sympy.sympify(formular)
@@ -212,6 +181,17 @@ class Variable(object):
 
         return self.latex_resp
 
+    @property
+    def latex(self) -> str:
+        if not self._latex:
+            return self.varname
+        else:
+            return self._latex
+
+    @latex.setter
+    def latex(self, value: str):
+        self._latex = value
+
     # todo do with numpy function
     @staticmethod
     def mittel_wert(arr):
@@ -239,16 +219,15 @@ class Variable(object):
             summe += (i - mittel_wert) ** 2
         return sqrt(1 / (len(arr) - 1) * summe)
 
+    @staticmethod
+    def get_symbols_dicts(var_list: List['Variable']):
+        dict = {}
+        dict_symbols = {}
+        for i in var_list:
+            dict[i.varname] = sympy.Symbol(i.varname)
+            dict_symbols[sympy.Symbol(i.varname)] = i.latex
+        return dict, dict_symbols
+
 
 if __name__ == "__main__":
-    v1 = Variable("Rgw", value=6.34, latex="R_{gw}", sys=0.0526, stat=0.02)
-    v2 = Variable("Rgsl", value=6.56, latex="R_{gsl}", sys=0.0526, stat=0.02)
-
-    v3 = Variable("Rg", latex="R_G")
-    re = v3.calc_err("Rgw - Rgsl", [v1, v2])
-
-    print(re[0])
-    print(re[1])
-    print(re[2])
-    print(re[3])
-    print(re[4])
+    pass

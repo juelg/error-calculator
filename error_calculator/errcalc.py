@@ -1,19 +1,21 @@
 import sympy
-import numpy as np
-from math import sqrt
-from typing import Dict, Tuple, Sequence, List
-from math import floor, log10
+import numpy
+from math import sqrt, floor, log10
+from typing import List
 
 
 # add consistant type annotations
-class LatexEngin(object):
+class LatexEngine(object):
     # todo add option possibility like breaks, num,
     # todo add rounding decimals
     # todo add möglichkeit für \num
     # todo everthing in english
 
-    def __init__(self, var_object: 'Variable'):
+    def __init__(self, var_object: 'Variable', significant_numbers=2, error_numbers=1):
         self.var_object = var_object
+        self.significant_numbers = significant_numbers
+        self.error_numbers = error_numbers
+
         self.overall = self.get_overall()
         self.sys = self.get_err_str("sys")
         self.stat = [self.get_err_str("stat")]
@@ -72,14 +74,14 @@ class LatexEngin(object):
                 my_str_stat_temp += "+{{ \\left( {} \\cdot \\Delta {}_{{\\rm stat}} \\right) }}^2".format(formel_latex,
                                                                                                           i.latex)
 
-        my_str_sys = my_str_sys + my_str_sys_temp[1:] + "= {}".format(Variable.round_to_n(self.sys, 2))
+        my_str_sys = my_str_sys + my_str_sys_temp[1:] + "= {}".format(Variable.round_to_n(self.var_object.sys, 2))
         my_str_stat = my_str_stat + my_str_stat_temp[1:] + "\\end{{multlined}} }} = {}".format(
-            Variable.round_to_n(self.stat, 2))
+            Variable.round_to_n(self.var_object.stat, 2))
 
         self.overall = self.get_overall()
         self.value = self.value_formular(formular, var_list)
         self.sys = my_str_sys.replace("\\\\", "\\")
-        self.stat = my_str_stat.replace("\\\\", "\\")
+        self.stat = [my_str_stat.replace("\\\\", "\\")]
 
     def get_overall(self) -> str:
         my_str_overall = "\\Delta {} = \\Delta {}_{{\\rm sys}} + " \
@@ -95,7 +97,7 @@ class LatexEngin(object):
         return "{} = ({}\\pm {})".format(self.var_object.latex, round(self.var_object.value, n), round(err, n))
 
     def get_err_str(self, kind: str):
-        return "\\Delta {}_{{\\rm {}}} = {}".format(self.var_object.latex, kind, Variable.round_to_n(self.sys, 2))
+        return "\\Delta {}_{{\\rm {}}} = {}".format(self.var_object.latex, kind, Variable.round_to_n(self.var_object.sys, 2))
 
     def value_formular(self, formular, var_list: List['Variable']):
         _, dict = Variable.get_symbols_dicts(var_list)
@@ -104,6 +106,24 @@ class LatexEngin(object):
         la = sympy.latex(formular, symbol_names=dict)
         return "{} = {} = ({}\\pm {})".format(self.var_object.latex, la, round(self.var_object.value, n),
                                               round(err, n)).replace("\\\\", "\\")
+
+    def latex_complete_str(self):
+        # todo this method is not finished yet -> add latex align enviorments
+        re_str = "The value of {} is calculated as follows:\n".format(self.var_object.latex)
+        re_str += self.value+"\n"
+        re_str += "Systemtic error \\Delta {}_{{\\rm sys}} is calculated as follows:\n".format(self.var_object.latex)
+        re_str += self.sys+"\n"
+        re_str += "Statistic error \\Delta {}_{{\\rm stat}} is calculated as follows:\n".format(self.var_object.latex)
+        re_str += self.stat + "\n"
+        re_str += "Therefore, overall error \\Delta {} is calculated as follows:\n".format(self.var_object.latex)
+        re_str += self.overall + "\n"
+
+    def __str__(self):
+        re_str = self.value+"\n\n"
+        re_str += self.sys + "\n\n"
+        re_str += self.stat + "\n\n"
+        re_str += self.overall
+        return re_str
 
 
 # todo einheiten
@@ -117,7 +137,7 @@ class Variable(object):
         self.sys = sys
         self.stat = stat
         self.value = value
-        self.latex_resp = LatexEngin(self)
+        self.latex_resp = LatexEngine(self)
 
     def value_exact(self) -> str:
         return "{}={}".format(self.latex, self.value)
@@ -125,13 +145,13 @@ class Variable(object):
     def __str__(self) -> str:
         err = self.overall_err()
         n = Variable.round_return(err, 1)
-        return "({}\\pm {})".format(round(self.value, n), round(err, n))
+        return "{} = ({}\\pm {})".format(self.latex, round(self.value, n), round(err, n))
 
     def overall_err(self) -> float:
         return self.sys + self.stat
 
-    def calc_stat(self, stat: List[float], stud_t=None) -> LatexEngin:
-        stat = np.array(stat)
+    def calc_stat(self, stat: List[float], stud_t=None) -> LatexEngine:
+        stat = numpy.array(stat)
 
         mean = Variable.mittel_wert(stat)
         self.value = mean
@@ -142,13 +162,13 @@ class Variable(object):
         self.stat = stud_t * var
 
         # create new object to avoid side effects
-        self.latex_resp = LatexEngin(self)
+        self.latex_resp = LatexEngine(self)
         # call has side effects on self object: will change latex code with an overline on it
         self.latex_resp.set_from_values(mean, var, self.stat, stud_t)
 
         return self.latex_resp
 
-    def calc(self, formular: str, var_list: List['Variable']) -> LatexEngin:
+    def calc(self, formular: str, var_list: List['Variable']) -> LatexEngine:
 
         dict, dict_symbols = Variable.get_symbols_dicts(var_list)
         sym_formular = sympy.sympify(formular)
@@ -176,7 +196,7 @@ class Variable(object):
         self.value = sym_formular_calc.evalf()
 
         # create new object to avoid side effects
-        self.latex_resp = LatexEngin(self)
+        self.latex_resp = LatexEngine(self)
         self.latex_resp.set_from_calculation(sym_formular, var_list)
 
         return self.latex_resp

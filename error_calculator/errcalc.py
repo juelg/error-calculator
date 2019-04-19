@@ -34,7 +34,7 @@ class LatexEngine(object):
 
         self.stat.append("\\Delta {}_{{\\rm stat}} = \\dfrac{{t}}{{\\sqrt{{n}}}}\\sigma_{{ {} }} = {} " \
                          "\\cdot \\sigma_{{ {} }} = {}".format(self.var_object.latex, self.var_object.latex, stud_t,
-                                                               self.var_object.latex, deviation))
+                                                               self.var_object.latex, Variable.round_to_n(deviation, 2)))
 
         # update latex code of the var_object and update strings
         self.var_object._latex = "\\overline{{ {} }}".format(self.var_object.latex)

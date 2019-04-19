@@ -1,8 +1,9 @@
 # Physics Error Calculation Library
 
-This library was made for every depressed physics student who gets confused with the amount of stupid error-prone work that one has to perform for error calcuation. My you have already thought if there isn't a way to do this autmoatically: Yes, there is. This library does the error calcuation fully automatically and even gives you the latex code back.
-You shouldn't be busy by writing down some latex formulars, but instead focusing on the important stuff at your report
-So, that you can focus on the important part of your report instead of writing down derivatives of formulars in latex taking you hours.
+This library was made for depressed physics student like me who get stressed with the amount of stupid error-prone work that one has to perform for error calcuation. If you are in that situation, maybe you have also already thought if there isn't a way to do this automatically.
+
+And I can give you the answer: Yes there is. This library which will is also able to output the ![equation](https://latex.codecogs.com/gif.latex?%5CLaTeX) code of the calculaton so that you can directly copy and paste it into the error calcuation section of your lab report and focus on the important parts of it.
+
 ## Dependencies
 * `sympy` for doing basically everthing when it comes to the calculation. But most important deriving
 * `numpy` for numpy arrays
@@ -106,6 +107,7 @@ la = dt1.calc_stat(stat_t, 0.51)
 The first argument of calc_stat is the list of values. This can also be a normal python list. We only used numpy here to multiply the vector with `10**-3`. The second value needs to be the ![equation](https://latex.codecogs.com/gif.latex?%5Cfrac%7Bt%7D%7B%5Csqrt%7Bn%7D%7D) factor for your ![equation](https://latex.codecogs.com/gif.latex?%5Ckappa) of the [student-t distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution).
 
 This will output the following:
+
 ```
 \overline{ \Delta t_2 } = \dfrac{1}{n}\sum\limits_{i=1}^{n}\Delta t_2_i = 0.004224
 \sigma_{ \Delta t_2 } = \sqrt{\dfrac{1}{n-1}\sum\limits_{i=1}^{n}(\Delta t_2_i-\overline{ \Delta t_2 })^2} = 1.6733200530681657e-05

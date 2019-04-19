@@ -3,3 +3,4 @@
 *.pyc
 /venv
 /.ipynb_checkpoints
+/error_calculator/__pycache__

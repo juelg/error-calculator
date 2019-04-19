@@ -121,7 +121,9 @@ class LatexEngine(object):
     def __str__(self):
         re_str = self.value+"\n\n"
         re_str += self.sys + "\n\n"
-        re_str += self.stat + "\n\n"
+        for i in self.stat:
+            re_str += i + "\n"
+        re_str += "\n"
         re_str += self.overall
         return re_str
 

@@ -81,6 +81,7 @@ v = \frac{2 l}{\Delta t} = (5260.0\pm 20.0)
 ```
 
 which in latex will render to
+
 ![equation](https://latex.codecogs.com/gif.latex?v%20%3D%20%5Cfrac%7B2%20l%7D%7B%5CDelta%20t%7D%20%3D%20%285260.0%5Cpm%2020.0%29)
 
 ![equation](https://latex.codecogs.com/gif.latex?%5CDelta%20v_%7B%5Crm%20sys%7D%20%3D%20%5Cleft%7C%20%5Cfrac%7B%5Cpartial%20v%7D%7B%5Cpartial%20l%7D%20%5CDelta%20l_%7B%5Crm%20sys%7D%20%5Cright%7C%3D%5Cleft%7C%20%5Cfrac%7B2%7D%7B%5CDelta%20t%7D%5Ccdot%20%5CDelta%20l_%7B%5Crm%20sys%7D%20%5Cright%7C%3D%205.3)
@@ -107,13 +108,13 @@ la = dt1.calc_stat(stat_t, 0.51)
 The first argument of calc_stat is the list of values. This can also be a normal python list. We only used numpy here to multiply the vector with `10**-3`. The second value needs to be the ![equation](https://latex.codecogs.com/gif.latex?%5Cfrac%7Bt%7D%7B%5Csqrt%7Bn%7D%7D) factor for your ![equation](https://latex.codecogs.com/gif.latex?%5Ckappa) of the [student-t distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution).
 
 This will output the following:
-
 ```
 \overline{ \Delta t_2 } = \dfrac{1}{n}\sum\limits_{i=1}^{n}\Delta t_2_i = 0.004224
 \sigma_{ \Delta t_2 } = \sqrt{\dfrac{1}{n-1}\sum\limits_{i=1}^{n}(\Delta t_2_i-\overline{ \Delta t_2 })^2} = 1.6733200530681657e-05
 \Delta \Delta t_2_{\rm stat} = \dfrac{t}{\sqrt{n}}\sigma_{ \Delta t_2 } = 0.51 \cdot \sigma_{ \Delta t_2 } = 8.5e-06
 ```
 With minor changes this will rendert to the following:
+
 ![equation](https://latex.codecogs.com/gif.latex?%5Coverline%7B%20%5CDelta%20t_2%20%7D%20%3D%20%5Cdfrac%7B1%7D%7Bn%7D%5Csum%5Climits_%7Bi%3D1%7D%5E%7Bn%7D%5CDelta%20t_%7B2%2Ci%7D%20%3D%200.004224%5C%5C%0A%5Csigma_%7B%20%5CDelta%20t_2%20%7D%20%3D%20%5Csqrt%7B%5Cdfrac%7B1%7D%7Bn-1%7D%5Csum%5Climits_%7Bi%3D1%7D%5E%7Bn%7D%28%5CDelta%20t_%7B2%2Ci%7D-%5Coverline%7B%20%5CDelta%20t_2%20%7D%29%5E2%7D%20%3D%201.7e-05%5C%5C%0A%5CDelta%20%5CDelta%20t_%7B2%5Crm%20stat%7D%20%3D%20%5Cdfrac%7Bt%7D%7B%5Csqrt%7Bn%7D%7D%5Csigma_%7B%20%5CDelta%20t_2%20%7D%20%3D%200.51%20%5Ccdot%20%5Csigma_%7B%20%5CDelta%20t_2%20%7D%20%3D%208.5e-06)
 
 The syntax a![equation](https://latex.codecogs.com/gif.latex?e)b means ![equation](https://latex.codecogs.com/gif.latex?a%5Ccdot%2010%5Eb). Python will always output floting points like this. You should not use this syntax in scientific reports. One way to auto format this correctly in Latex would be to use the command `\num{3.14e3}` from the package `siunitx`. (Including the num command in the latex is already planned to add in a future version)

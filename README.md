@@ -2,7 +2,7 @@
 
 This library was made for depressed physics student like me who get stressed with the amount of stupid error-prone work that one has to perform for error calcuation. If you are in that situation, maybe you have also already thought if there isn't a way to do this automatically.
 
-And I can give you the answer: Yes there is. This library which will is also able to output the <img style="vertical-align: middle;" src="https://latex.codecogs.com/gif.latex?%5CLaTeX"> code of the calculaton so that you can directly copy and paste it into the error calcuation section of your lab report and focus on the important parts of it.
+And I can give you the answer: Yes there is. This library which will is also able to output the ![equation](https://latex.codecogs.com/gif.latex?%5CLaTeX) code of the calculaton so that you can directly copy and paste it into the error calcuation section of your lab report and focus on the important parts of it.
 
 ## Dependencies
 * `sympy` for doing basically everthing when it comes to the calculation. But most important deriving
@@ -31,11 +31,11 @@ Let's assume we want to calculate the speed of sound of specific material. There
 
 ![equation](https://latex.codecogs.com/gif.latex?v%3D%5Cfrac%7B2l%7D%7B%5CDelta%20t%7D)
 
-where <img style="vertical-align: middle;" src="https://latex.codecogs.com/gif.latex?l"> is the length of the rod and <img style="vertical-align: middle;" src="https://latex.codecogs.com/gif.latex?%5CDelta%20t"> is the time for one oscillation.
+where ![equation](https://latex.codecogs.com/gif.latex?l) is the length of the rod and ![equation](https://latex.codecogs.com/gif.latex?%5CDelta%20t) is the time for one oscillation.
 
 Let's say our meassure examples look like this:
-* <img style="vertical-align: middle;" src="https://latex.codecogs.com/gif.latex?l%20%3D%201%7B%5Crm%20m%7D"> with a systematic error of <img style="vertical-align: middle;" src="https://latex.codecogs.com/gif.latex?%5CDelta%20l_%7B%5Crm%20sys%7D%20%3D%200.2%7B%5Crm%20cm%7D"> and a statistical error of <img style="vertical-align: middle;" src="https://latex.codecogs.com/gif.latex?%5CDelta%20l_%7B%5Crm%20stat%7D%20%3D%200.1%7B%5Crm%20cm%7D">
-* <img style="vertical-align: middle;" src="https://latex.codecogs.com/gif.latex?%5CDelta%20t%20%3D%200.38%7B%5Crm%20ms%7D"> with only a statistical error of <img style="vertical-align: middle;" src="https://latex.codecogs.com/gif.latex?%5CDelta%20%28%5CDelta%20t%29_%7B%5Crm%20stat%7D%20%3D%200.001%7B%5Crm%20ms%7D">
+* ![equation](https://latex.codecogs.com/gif.latex?l%20%3D%201%7B%5Crm%20m%7D) with a systematic error of ![equation](https://latex.codecogs.com/gif.latex?%5CDelta%20l_%7B%5Crm%20sys%7D%20%3D%200.2%7B%5Crm%20cm%7D) and a statistical error of ![equation](https://latex.codecogs.com/gif.latex?%5CDelta%20l_%7B%5Crm%20stat%7D%20%3D%200.1%7B%5Crm%20cm%7D)
+* ![equation](https://latex.codecogs.com/gif.latex?%5CDelta%20t%20%3D%200.38%7B%5Crm%20ms%7D) with only a statistical error of ![equation](https://latex.codecogs.com/gif.latex?%5CDelta%20%28%5CDelta%20t%29_%7B%5Crm%20stat%7D%20%3D%200.001%7B%5Crm%20ms%7D)
 
 First, we need to import the library:
 
@@ -105,9 +105,11 @@ dt2 = Variable("dt", latex="\\Delta t_2")
 la = dt1.calc_stat(stat_t, 0.51)
 [print(i) for i in la.stat]
 ```
-The first argument of calc_stat is the list of values. This can also be a normal python list. We only used numpy here to multiply the vector with `10**-3`. The second value needs to be the <img style="vertical-align: middle;" src="https://latex.codecogs.com/gif.latex?%5Cfrac%7Bt%7D%7B%5Csqrt%7Bn%7D%7D"> factor for your <img style="vertical-align: middle;" src="https://latex.codecogs.com/gif.latex?%5Ckappa"> of the [student-t distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution).
+The first argument of calc_stat is the list of values. This can also be a normal python list. We only used numpy here to multiply the vector with `10**-3`. The second value needs to be the ![equation](https://latex.codecogs.com/gif.latex?%5Cfrac%7Bt%7D%7B%5Csqrt%7Bn%7D%7D) factor for your level of confidence ![equation](https://latex.codecogs.com/gif.latex?%5Ckappa) of the [student-t distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution).
 
-This will output the following:
+![level of confidence](level_of_confidence.png)
+
+The code from above will output the following:
 ```
 \overline{ \Delta t_2 } = \dfrac{1}{n}\sum\limits_{i=1}^{n}\Delta t_2_i = 0.004224
 \sigma_{ \Delta t_2 } = \sqrt{\dfrac{1}{n-1}\sum\limits_{i=1}^{n}(\Delta t_2_i-\overline{ \Delta t_2 })^2} = 1.6733200530681657e-05
@@ -115,9 +117,9 @@ This will output the following:
 ```
 With minor changes this will rendert to the following:
 
-![equation](https://latex.codecogs.com/gif.latex?%5Coverline%7B%20%5CDelta%20t_2%20%7D%20%3D%20%5Cdfrac%7B1%7D%7Bn%7D%5Csum%5Climits_%7Bi%3D1%7D%5E%7Bn%7D%5CDelta%20t_%7B2%2Ci%7D%20%3D%200.004224%5C%5C%0A%5Csigma_%7B%20%5CDelta%20t_2%20%7D%20%3D%20%5Csqrt%7B%5Cdfrac%7B1%7D%7Bn-1%7D%5Csum%5Climits_%7Bi%3D1%7D%5E%7Bn%7D%28%5CDelta%20t_%7B2%2Ci%7D-%5Coverline%7B%20%5CDelta%20t_2%20%7D%29%5E2%7D%20%3D%201.7e-05%5C%5C%0A%5CDelta%20%5CDelta%20t_%7B2%5Crm%20stat%7D%20%3D%20%5Cdfrac%7Bt%7D%7B%5Csqrt%7Bn%7D%7D%5Csigma_%7B%20%5CDelta%20t_2%20%7D%20%3D%200.51%20%5Ccdot%20%5Csigma_%7B%20%5CDelta%20t_2%20%7D%20%3D%208.5e-06)
+![equation](https://latex.codecogs.com/gif.latex?%5Coverline%7B%20%5CDelta%20t_2%20%7D%20%3D%20%5Cdfrac%7B1%7D%7Bn%7D%5Csum%5Climits_%7Bi%3D1%7D%5E%7Bn%7D%5CDelta%20t_%7B2%2Ci%7D%20%3D%200.004224%5C%5C%0A%5Csigma_%7B%20%5CDelta%20t_2%20%7D%20%3D%20%5Csqrt%7B%5Cdfrac%7B1%7D%7Bn-1%7D%5Csum%5Climits_%7Bi%3D1%7D%5E%7Bn%7D%28%5CDelta%20t_%7B2%2Ci%7D-%5Coverline%7B%20%5CDelta%20t_2%20%7D%29%5E2%7D%20%3D%201.7e-05%5C%5C%0A%5CDelta%20%28%5CDelta%20t_%7B2%5Crm%20stat%7D%29%20%3D%20%5Cdfrac%7Bt%7D%7B%5Csqrt%7Bn%7D%7D%5Csigma_%7B%20%5CDelta%20t_2%20%7D%20%3D%200.51%20%5Ccdot%20%5Csigma_%7B%20%5CDelta%20t_2%20%7D%20%3D%208.5e-06)
 
-The syntax a<img style="vertical-align: middle;" src="https://latex.codecogs.com/gif.latex?e">b means ![equation](https://latex.codecogs.com/gif.latex?a%5Ccdot%2010%5Eb). Python will always output floating points like this. You should not use this syntax in scientific reports. One way to auto format this correctly in Latex would be to use the command `\num{3.14e3}` from the package `siunitx`. (Including the num command in the latex is already planned to add in a future version)
+The syntax `aeb` means ![equation](https://latex.codecogs.com/gif.latex?a%5Ccdot%2010%5Eb). Python will always output floating points like this. You should not use this syntax in scientific reports. One way to auto format this correctly in Latex would be to use the command `\num{3.14e3}` from the package `siunitx`. (Including the num command in the latex code is already planned to add in a future version)
 
 ### Pitfalls
 
@@ -137,7 +139,7 @@ So you would do
 d = Variable("d")
 d.calc("a*c", [a, c])
 ```
-In this case we would derive once for a and once for c, because in the current design only the error values will be remembered and not the formulars. But this would be wrong because c consists of a. For getting the correct value in cases like this where we multiply, devide etc. by a value that was already used in the calculation before we need to write out c as <img style="vertical-align: middle;" src="https://latex.codecogs.com/gif.latex?%5Cfrac%7Ba%7D%7Bb%7D">:
+In this case we would derive once for a and once for c, because in the current design only the error values will be remembered and not the formulars. But this would be wrong because c consists of a. For getting the correct value in cases like this where we multiply, devide etc. by a value that was already used in the calculation before we need to write out c as ![equation](https://latex.codecogs.com/gif.latex?%5Cfrac%7Ba%7D%7Bb%7D):
 ```python
 d = Variable("d")
 d.calc("a*a/b", [a, b])
